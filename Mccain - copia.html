@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>McCain Studios</title>
+    <style>
+        :root {
+            --bg-color: #0b0d12;
+            --card-bg: rgba(22, 27, 38, 0.7);
+            --accent-ps: #0070d1;
+            --accent-xbox: #107c41;
+            --accent-nintendo: #e60012;
+            --accent-primary: #6366f1;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 112, 209, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 13, 18, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            fill: var(--accent-primary);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cart-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .cart-btn:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .cart-count {
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 1.5rem 1rem 0 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-color);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .consoles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .console-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .console-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .console-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .console-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .console-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 1rem 0;
+        }
+
+        .add-cart-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .add-cart-btn:hover {
+            opacity: 0.9;
+        }
+
+        .search-bar-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .platform-section {
+            margin-bottom: 2.5rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .platform-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .platform-title.ps { color: #58a6ff; }
+        .platform-title.xbox { color: #3fb950; }
+        .platform-title.nintendo { color: #f85149; }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .game-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .game-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card .sales {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .contact-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .contact-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 0.8rem;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .submit-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Modal Carrito */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .cart-modal.open {
+            display: flex;
+        }
+
+        .cart-content {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .cart-list {
+            list-style: none;
+            margin: 1.5rem 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item button {
+            background: transparent;
+            border: none;
+            color: #f85149;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-cart-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .footer-socials {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .footer-socials a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-socials a:hover {
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <svg class="logo-icon" viewBox="0 0 24 24">
+                <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+            <span class="logo-text">MCCAIN STUDIOS</span>
+        </div>
+
+        <button class="cart-btn" onclick="toggleCart()">
+             🛒 Carrito
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </header>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab(event, 'consolas')">Consolas & Rentas</button>
+        <button class="tab-btn" onclick="switchTab(event, 'juegos')">Catálogo de Juegos</button>
+        <button class="tab-btn" onclick="switchTab(event, 'ubicacion')">Ubicación</button>
+        <button class="tab-btn" onclick="switchTab(event, 'contacto')">Contacto</button>
+        <!-- NUEVA PESTAÑA SIGN IN -->
+        <button class="tab-btn" onclick="switchTab(event, 'signin')">Sign In</button>
+    </nav>
+
+    <main>
+        <!-- Pestaña Consolas y Rentas -->
+        <section id="consolas" class="tab-content active">
+            <div class="consoles-grid">
+               
+                <!-- Xbox Series X -->
+                <article class="console-card">
+                    <div>
+                        <div class="console-header">
+                            <svg class="console-icon" viewBox="0 0 24 24" fill="var(--accent-xbox)">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 12.8c-.8.8-2.6 2.2-4.64 2.2s-3.84-1.4-4.64-2.2c-.44-.44-.24-1.2.36-1.36 1.4-.36 2.84-.54 4.28-.54s2.88.18 4.28.54c.6.16.8.92.36 1.36z"/>
+                            </svg>
+                            <h3 class="console-title">Xbox Series X</h3>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Renta por hora en sala o compra de consola física con garantía extendida.</p>
+                    </div>
+                    <div class="price-tag">$500 USD</div>
+                    <button class="add-cart-btn" onclick="addToCart('Xbox Series X', 500)">Añadir al Carrito</button>
+                </article>
+
+                <!-- Nintendo Switch OLED -->
+                <article class="console-card">
+                    <div>
+                        <div class="console-header">
+                            <svg class="console-icon" viewBox="0 0 24 24" fill="var(--accent-nintendo)">
+                                <path d="M7.5 2H2v20h5.5c3 0 5.5-2.5 5.5-5.5v-9C13 4.5 10.5 2 7.5 2zm-1 15c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm10-15H12v20h4.5c3 0 5.5-2.5 5.5-5.5v-9c0-3-2.5-5.5-5.5-5.5zm1 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                            </svg>
+                            <h3 class="console-title">Nintendo Switch OLED</h3>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ideal para partidas multijugador locales y portabilidad total.</p>
+                    </div>
+                    <div class="price-tag">$350 USD</div>
+                    <button class="add-cart-btn" onclick="addToCart('Nintendo Switch OLED', 350)">Añadir al Carrito</button>
+                </article>
+
+                <!-- PlayStation 5 -->
+                <article class="console-card">
+                    <div>
+                        <div class="console-header">
+                            <svg class="console-icon" viewBox="0 0 24 24" fill="var(--accent-ps)">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-2V8h2v8zm4 0h-2V8h2v8z"/>
+                            </svg>
+                            <h3 class="console-title">PlayStation 5</h3>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Experiencia inmersiva de última generación con retroalimentación háptica.</p>
+                    </div>
+                    <div class="price-tag">$500 USD</div>
+                    <button class="add-cart-btn" onclick="addToCart('PlayStation 5', 500)">Añadir al Carrito</button>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Pestaña Catálogo de Juegos -->
+        <section id="juegos" class="tab-content" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+           
+            <div class="search-bar-container">
+                <input type="text" id="gameSearch" class="search-input" placeholder="🔍 Buscar videojuego por título o plataforma..." onkeyup="filterGames()">
+            </div>
+
+            <!-- PlayStation -->
+            <div class="platform-section">
+                <h3 class="platform-title ps">🎮 Juegos PlayStation</h3>
+                <div class="games-grid">
+                    <div class="game-card" data-name="god of war ragnarok playstation">
+                        <h4>God of War Ragnarök</h4>
+                        <div class="sales">$60 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('God of War Ragnarök (PS5)', 60)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="marvel's spider-man 2 playstation">
+                        <h4>Spider-Man 2</h4>
+                        <div class="sales">$70 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Spider-Man 2 (PS5)', 70)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="the last of us part ii playstation">
+                        <h4>The Last of Us Part II</h4>
+                        <div class="sales">$40 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('The Last of Us Part II (PS4/PS5)', 40)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="demon's souls playstation">
+                        <h4>Demon's Souls</h4>
+                        <div class="sales">$50 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Demon\'s Souls (PS5)', 50)">Añadir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Xbox -->
+            <div class="platform-section">
+                <h3 class="platform-title xbox">🎮 Juegos Xbox</h3>
+                <div class="games-grid">
+                    <div class="game-card" data-name="halo infinite xbox">
+                        <h4>Halo Infinite</h4>
+                        <div class="sales">$50 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Halo Infinite (Xbox)', 50)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="forza horizon 5 xbox">
+                        <h4>Forza Horizon 5</h4>
+                        <div class="sales">$60 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Forza Horizon 5 (Xbox)', 60)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="starfield xbox">
+                        <h4>Starfield</h4>
+                        <div class="sales">$70 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Starfield (Xbox)', 70)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="gears 5 xbox">
+                        <h4>Gears 5</h4>
+                        <div class="sales">$30 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Gears 5 (Xbox)', 30)">Añadir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nintendo -->
+            <div class="platform-section">
+                <h3 class="platform-title nintendo">🎮 Juegos Nintendo Switch</h3>
+                <div class="games-grid">
+                    <div class="game-card" data-name="the legend of zelda tears of the kingdom nintendo">
+                        <h4>Zelda: Tears of the Kingdom</h4>
+                        <div class="sales">$70 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Zelda: Tears of the Kingdom (Switch)', 70)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="super mario bros wonder nintendo">
+                        <h4>Super Mario Bros. Wonder</h4>
+                        <div class="sales">$60 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Super Mario Bros. Wonder (Switch)', 60)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="mario kart 8 deluxe nintendo">
+                        <h4>Mario Kart 8 Deluxe</h4>
+                        <div class="sales">$50 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Mario Kart 8 Deluxe (Switch)', 50)">Añadir</button>
+                    </div>
+                    <div class="game-card" data-name="super smash bros ultimate nintendo">
+                        <h4>Super Smash Bros. Ultimate</h4>
+                        <div class="sales">$60 USD</div>
+                        <button class="add-cart-btn" onclick="addToCart('Super Smash Bros. Ultimate (Switch)', 60)">Añadir</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Pestaña Ubicación -->
+        <section id="ubicacion" class="tab-content" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <div class="platform-section" style="padding: 2rem;">
+                <h3 class="platform-title ps" style="margin-bottom: 1rem;">📍 Nuestra Ubicación</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Visítanos en nuestras instalaciones para disfrutar de la mejor experiencia gaming.</p>
+                <div style="width: 100%; height: 350px; background: rgba(0,0,0,0.3); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+                    <p style="color: var(--text-muted);">[ Mapa interactivo de ubicación ]</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pestaña Contacto -->
+        <section id="contacto" class="tab-content">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2>¡Ponte en contacto!</h2>
+                    <p>¿Tienes dudas o quieres reservar una sesión de juego? Contáctanos directamente.</p>
+                   
+                    <a href="https://instagram.com" target="_blank" class="contact-item">
+                        <svg viewBox="0 0 24 24" fill="#e1306c">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        <div>
+                            <h4>Instagram</h4>
+                            <p>@mccain_studios</p>
+                        </div>
+                    </a>
+
+                    <div class="contact-item">
+                        <svg viewBox="0 0 24 24" fill="#6366f1">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <div>
+                            <h4>Correo Electrónico</h4>
+                            <p>contacto@mccainstudios.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo</label>
+                        <input type="text" id="name" required placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensaje</label>
+                        <textarea id="message" rows="4" required placeholder="Escribe tu consulta..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- NUEVA PESTAÑA SIGN IN -->
+        <section id="signin" class="tab-content" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <div class="platform-section" style="max-width: 500px; margin: 0 auto; padding: 2rem;">
+                <h3 class="platform-title ps" style="margin-bottom: 1.5rem; text-align: center;">Iniciar Sesión</h3>
+                <form action="Login.php" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" name="email" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" name="password" required placeholder="********">
+                    </div>
+                    <button type="submit" class="submit-btn" style="margin-top: 1rem;">Entrar</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal del Carrito -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <h3>🛒 Carrito de Compras</h3>
+            <ul class="cart-list" id="cartItems">
+                <!-- Se llena dinámicamente con JS -->
+            </ul>
+            <div class="cart-total" id="cartTotal">Total: $0 USD</div>
+            <button class="add-cart-btn" style="margin-bottom: 0.5rem;" onclick="checkout()">Finalizar Pedido</button>
+            <button class="close-cart-btn" onclick="toggleCart()">Cerrar</button>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid var(--border-color); backdrop-filter: blur(8px);">
+        <p style="color: var(--text-muted); font-size: 0.85rem;">© 2026 McCain Studios. Todos los derechos reservados.</p>
+        <div class="footer-socials">
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+            <a href="#">Términos y Condiciones</a>
+        </div>
+    </footer>
+
+    <!-- Lógica de JavaScript -->
+    <script>
+        // 1. Manejo de Pestañas
+        function switchTab(event, tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // 2. Lógica del Carrito de Compras
+        let cart = [];
+
+        function addToCart(productName, price) {
+            cart.push({ name: productName, price: price });
+            updateCart();
+            alert(`"${productName}" se ha añadido al carrito.`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+
+            cartCount.innerText = cart.length;
+            cartItems.innerHTML = '';
+
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<li style="color: var(--text-muted); text-align: center;">El carrito está vacío.</li>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const li = document.createElement('li');
+                    li.className = 'cart-item';
+                    li.innerHTML = `
+                        <span>${item.name} - $${item.price} USD</span>
+                        <button onclick="removeFromCart(${index})">✕</button>
+                    `;
+                    cartItems.appendChild(li);
+                });
+            }
+
+            cartTotal.innerText = `Total: $${total} USD`;
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('open');
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Tu carrito está vacío.');
+                return;
+            }
+            alert('¡Gracias por tu pedido! Nos pondremos en contacto contigo para completar la transacción.');
+            cart = [];
+            updateCart();
+            toggleCart();
+        }
+
+        // 3. Filtro de Juegos
+        function filterGames() {
+            const input = document.getElementById('gameSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.game-card');
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(input)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 4. Formulario de Contacto
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            alert('¡Gracias por escribirnos! Tu mensaje ha sido enviado correctamente.');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>
